@@ -148,10 +148,10 @@ globalState.__onChange(
       document.addEventListener("cursordown", () => {
         if (globalState.isIntro) globalState.isIntro = false
       })
-      
+
       setTimeout(() => {
         document.querySelector<HTMLElement>(".hudWrapper .hint")!.style.opacity = "0"
-      }, 3000);
+      }, 3000)
     }
   },
   true,
@@ -179,11 +179,8 @@ const webgl = new WebGL(canvas, globalState, sounds)
 const stats = new Stats()
 
 // "Dev mode"
-if(import.meta.env.MODE === "development"){
-  setTimeout(start, 700)
-  document.body.appendChild(stats.dom)
-  document.body.querySelector<HTMLElement>(".tp-dfwv")!.style.display = "block"
-}
+// setTimeout(start, 700)
+// document.body.appendChild(stats.dom)
 
 const raf = () => {
   stats.begin()
