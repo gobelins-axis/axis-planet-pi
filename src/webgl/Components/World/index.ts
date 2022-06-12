@@ -13,6 +13,7 @@ import json from "../../../assets/spritesheets/spritesheet.json"
 import AbstractObjectNoContext from "../../Abstract/AbstractObjectNoContext"
 import planetRepartition from "./planetsRepartition.json"
 import tuple from "../../../utils/types/tuple"
+import Axis from "../../../axis"
 
 export default class World extends AbstractObject<MainSceneContext> {
   private tickingObjects: AbstractObjectNoContext[] = []
@@ -226,13 +227,51 @@ export default class World extends AbstractObject<MainSceneContext> {
     this.grabObjects[this.activeGrabObjectIndex].disappear()
   }
 
+  private onKeyDown = (e) => {
+    if (this.context.globalState.step !== "game") return
+    if (e.key !== "a") return
+
+    const planet = this.context.sceneState.currentPlanet!
+    const controllers = Array.from(planet.peopleData.keys())
+
+    this.context.sounds.propulsionLoop.play()
+    this.context.sounds.propulsionLoop.loop()
+
+    for (const controller of controllers) {
+      planet.removePeopleController(controller)
+    }
+
+    this.grabObjects[this.activeGrabObjectIndex].setPhysicalPeopleControllers(
+      controllers,
+      this.planets,
+    )
+  }
+
+  private onKeyUp = (e) => {
+    if (this.context.globalState.step !== "game") return
+    if (e.key !== "a") return
+
+    this.context.sounds.propulsionLoop.stop()
+    this.context.sounds.launch.play()
+    this.context.sounds.launch.rate(remap(Math.random(), [0, 1], [0.5, 3]))
+
+    this.grabObjects[this.activeGrabObjectIndex].repulsePhysicalPeopleControllers()
+    this.grabObjects[this.activeGrabObjectIndex].disappear()
+  }
+
   setEvents() {
     this.context.renderer.domElement.addEventListener("pointerdown", this.onMouseDown)
     window.addEventListener("pointerup", this.onMouseUp)
+    setTimeout(() => {
+      Axis.addEventListener("keydown", this.onKeyDown)
+      Axis.addEventListener("keyup", this.onKeyUp)
+    }, 500)
 
     this.toUnbind(() => {
       this.context.renderer.domElement.removeEventListener("pointerdown", this.onMouseDown)
       window.removeEventListener("pointerup", this.onMouseUp)
+      Axis.removeEventListener("keydown", this.onKeyDown)
+      Axis.removeEventListener("keyup", this.onKeyUp)
     })
   }
 

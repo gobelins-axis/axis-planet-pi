@@ -90,7 +90,7 @@ export default class GrabObject extends PhysicsObject {
       0,
     )
     this.output.rotation.z = -angle + Math.PI / 2
-    this.icon.position.y = -(this.offsetRadius + this.currentPlanet.radius) * 2
+    // this.icon.position.y = -(this.offsetRadius + this.currentPlanet.radius) * 2
     this.output.position.lerp(temporaryVectors.lerpedTargetRotation, alpha)
   }
 
