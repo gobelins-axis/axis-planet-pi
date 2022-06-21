@@ -8,6 +8,20 @@ Axis.joystick1.setGamepadEmulatorJoystick(gamepadEmulator, 0) // Gamepad Joystic
 
 Axis.registerKeys([" "], "a", 1) // Space triggers button A
 
+// Set leds
+const color = '#df3b57';
+
+for (let i = 0; i < Axis.ledManager.leds.length; i++) {
+    Axis.ledManager.leds[i].setColor(color);
+}
+
+for (let i = 0; i < Axis.ledManager.ledGroups[0].leds.length; i++) {
+    const ledLeft = Axis.ledManager.ledGroups[0].leds[i];
+    const ledRight = Axis.ledManager.ledGroups[1].leds[i];
+    ledLeft.setColor(color);
+    ledRight.setColor(color);
+}
+
 export default Axis
 
 export {
