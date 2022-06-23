@@ -15,6 +15,9 @@ import endGameSound from "./assets/sounds/game_over/game_over.mp3"
 import musicUrl from "./assets/sounds/music/planete_loop.mp3"
 import aliens from "./assets/aliens.json"
 import planets from "./assets/planets.json"
+import Axis, { gamepadEmulator } from "./axis"
+
+document.body.style.opacity = 1;
 
 const canvas = document.querySelector<HTMLCanvasElement>("#webgl")!
 
@@ -92,15 +95,21 @@ const addEntry = (d: { name: string; planet: number; people: number }) => {
 }
 
 const start = () => {
+  if (globalState.step === "game") return
   globalState.step = "game"
   sounds.ambiant.stop()
+  Axis.removeEventListener("keyup", start)
 }
 startButton.addEventListener("click", start)
+Axis.addEventListener("keyup", start)
 
 const end = () => {
+  if (globalState.step === "game" || globalState.step === "start") return
   document.location.reload()
+  Axis.removeEventListener("keyup", end)
 }
 endButton.addEventListener("click", end)
+Axis.addEventListener("keyup", end)
 
 document.addEventListener("keypress", (e) => {
   if ((e.key === " " || e.key === "Enter") && globalState.step === "start") start()
@@ -184,6 +193,7 @@ const stats = new Stats()
 
 const raf = () => {
   stats.begin()
+  gamepadEmulator.update()
   webgl.tick()
   stats.end()
   requestAnimationFrame(raf)
